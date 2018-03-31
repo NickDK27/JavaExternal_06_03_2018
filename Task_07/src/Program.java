@@ -32,7 +32,7 @@ public class Program {
             System.out.println("14 - Знайти найдорожчий транспортний засіб");
             System.out.println("15 - Знайти транспортний засіб: рік випуску 2000-2005, швидкість більше 150 км/год, найменша вартість");
             System.out.println("16 - Масив Car не старше 5 років");
-            System.out.println("17 - Масив Ship з відсортованою ціною за спаданням");
+            System.out.println("17 - Масив Ship не старше 5 років з відсортованою ціною за спаданням");
             System.out.println("18 - Три послідовності IFly, ISwim, IMove");
             System.out.println("19 - min та max");
             System.out.println("0 - Вихід");
@@ -383,7 +383,7 @@ public class Program {
                 i++;
 
             imin = i;
-            speed_min = speed_value(vector, inter, imin);
+            speed_min = speed_value(vector[imin], inter);
 
             for (int j = i + 1; j < vector.length; j++)
             {
@@ -394,18 +394,18 @@ public class Program {
 
                 if ((j < vector.length) && (vector[j] instanceof Amphibia)) {
                     if (((Amphibia)vector[j]).getSpeed(inter) > speed_min) {
-                        speed_min = speed_value(vector, inter, j);
+                        speed_min = speed_value(vector[j], inter);
                         imin = j;
                     }
                 }
                 else if ((j < vector.length) && (vector[j] instanceof BatMobile)) {
                     if (((BatMobile)vector[j]).getSpeed(inter) > speed_min){
-                        speed_min = speed_value(vector, inter, j);
+                        speed_min = speed_value(vector[j], inter);
                         imin = j;
                     }
                 }
                 else if ((j < vector.length) && (vector[j].getSpeed() > speed_min)){
-                    speed_min = speed_value(vector, inter, j);
+                    speed_min = speed_value(vector[j], inter);
                     imin = j;
                 }
             }
@@ -420,34 +420,36 @@ public class Program {
 
     public static Vehicle MinI(Vehicle[] vector, Class inter)
     {
-        int imin = 0;
-        Vehicle temp;
-        double speed_j, speed_min;
-        for(int i = 0; i < vector.length; i++) {
-            while ((i < vector.length - 1) && ((IMove.class.equals(inter) && (!(vector[i] instanceof IMove))) ||
+        int i = 0;
+        while ((i < vector.length) && ((IMove.class.equals(inter) && (!(vector[i] instanceof IMove))) ||
+                (ISwim.class.equals(inter) && (!(vector[i] instanceof ISwim))) ||
+                (IFly.class.equals(inter) && (!(vector[i] instanceof IFly)))))
+            i++;
+
+        int imin = i;
+        double speed_min = speed_value(vector[imin], inter);;
+
+        for(; i < vector.length; i++) {
+            while ((i < vector.length) && ((IMove.class.equals(inter) && (!(vector[i] instanceof IMove))) ||
                     (ISwim.class.equals(inter) && (!(vector[i] instanceof ISwim))) ||
                     (IFly.class.equals(inter) && (!(vector[i] instanceof IFly)))))
                 i++;
 
-            if (i < vector.length) {
-                imin = i;
-                speed_min = speed_value(vector, inter, imin);
-
-                if ((i < vector.length) && (vector[i] instanceof Amphibia)) {
+            if (i < vector.length)
+                if (vector[i] instanceof Amphibia) {
                     if (((Amphibia) vector[i]).getSpeed(inter) < speed_min) {
-                        speed_min = speed_value(vector, inter, i);
+                        speed_min = speed_value(vector[i], inter);
                         imin = i;
                     }
-                } else if ((i < vector.length) && (vector[i] instanceof BatMobile)) {
+                } else if (vector[i] instanceof BatMobile) {
                     if (((BatMobile) vector[i]).getSpeed(inter) < speed_min) {
-                        speed_min = speed_value(vector, inter, i);
+                        speed_min = speed_value(vector[i], inter);
                         imin = i;
                     }
-                } else if ((i < vector.length) && (vector[i].getSpeed() < speed_min)) {
-                    speed_min = speed_value(vector, inter, i);
+                } else if (vector[i].getSpeed() < speed_min) {
+                    speed_min = speed_value(vector[i], inter);
                     imin = i;
                 }
-            }
         }
 
         return vector[imin];
@@ -455,47 +457,49 @@ public class Program {
 
     public static Vehicle MaxI(Vehicle[] vector, Class inter)
     {
-        int imin = 0;
-        Vehicle temp;
-        double speed_j, speed_min;
-        for(int i = 0; i < vector.length; i++) {
-            while ((i < vector.length - 1) && ((IMove.class.equals(inter) && (!(vector[i] instanceof IMove))) ||
+        int i = 0;
+        while ((i < vector.length) && ((IMove.class.equals(inter) && (!(vector[i] instanceof IMove))) ||
+                (ISwim.class.equals(inter) && (!(vector[i] instanceof ISwim))) ||
+                (IFly.class.equals(inter) && (!(vector[i] instanceof IFly)))))
+            i++;
+
+        int imax = i;
+        double speed_max = speed_value(vector[imax], inter);;
+
+        for(; i < vector.length; i++) {
+            while ((i < vector.length) && ((IMove.class.equals(inter) && (!(vector[i] instanceof IMove))) ||
                     (ISwim.class.equals(inter) && (!(vector[i] instanceof ISwim))) ||
                     (IFly.class.equals(inter) && (!(vector[i] instanceof IFly)))))
                 i++;
 
-            if (i < vector.length) {
-                imin = i;
-                speed_min = speed_value(vector, inter, imin);
-
-                if ((i < vector.length) && (vector[i] instanceof Amphibia)) {
-                    if (((Amphibia) vector[i]).getSpeed(inter) > speed_min) {
-                        speed_min = speed_value(vector, inter, i);
-                        imin = i;
+            if (i < vector.length)
+                if (vector[i] instanceof Amphibia) {
+                    if (((Amphibia) vector[i]).getSpeed(inter) > speed_max) {
+                        speed_max = speed_value(vector[i], inter);
+                        imax = i;
                     }
-                } else if ((i < vector.length) && (vector[i] instanceof BatMobile)) {
-                    if (((BatMobile) vector[i]).getSpeed(inter) > speed_min) {
-                        speed_min = speed_value(vector, inter, i);
-                        imin = i;
+                } else if (vector[i] instanceof BatMobile) {
+                    if (((BatMobile) vector[i]).getSpeed(inter) > speed_max) {
+                        speed_max = speed_value(vector[i], inter);
+                        imax = i;
                     }
-                } else if ((i < vector.length) && (vector[i].getSpeed() > speed_min)) {
-                    speed_min = speed_value(vector, inter, i);
-                    imin = i;
+                } else if (vector[i].getSpeed() > speed_max) {
+                    speed_max = speed_value(vector[i], inter);
+                    imax = i;
                 }
-            }
         }
 
-        return vector[imin];
+        return vector[imax];
     }
 
-    public static double speed_value(Vehicle[] vector, Class inter, int imin){
+    public static double speed_value(Vehicle element, Class inter){
         double speed_imin;
-        if (vector[imin] instanceof Amphibia)
-            speed_imin = ((Amphibia)vector[imin]).getSpeed(inter);
-        else if (vector[imin] instanceof BatMobile)
-            speed_imin = ((BatMobile)vector[imin]).getSpeed(inter);
+        if (element instanceof Amphibia)
+            speed_imin = ((Amphibia)element).getSpeed(inter);
+        else if (element instanceof BatMobile)
+            speed_imin = ((BatMobile)element).getSpeed(inter);
         else
-            speed_imin = vector[imin].getSpeed();
+            speed_imin = element.getSpeed();
         return speed_imin;
     }
 
