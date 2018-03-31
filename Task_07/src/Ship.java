@@ -1,4 +1,4 @@
-public class Ship extends Vehicle {
+public class Ship extends Vehicle implements ISwim {
     int passengers;
     String port;
 
@@ -41,6 +41,11 @@ public class Ship extends Vehicle {
     @Override
     void display_year() {
         System.out.printf("I'm Ship. Мій рік випуску: %d\n", super.getYear());
+    }
+
+    @Override
+    public void swim() {
+        System.out.printf("I'm Ship і я можу плавати\n");
     }
 
 }

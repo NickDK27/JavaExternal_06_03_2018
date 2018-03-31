@@ -1,5 +1,5 @@
 class VehicleFactory extends AbstractVehicleFactory{
-    private final int TYPE_VEHICLE = 3;
+    private final int TYPE_VEHICLE = 5;
     @Override
     public Vehicle RandVehicle() {
         return GetVehicle((int)(Math.random()*TYPE_VEHICLE));
@@ -15,6 +15,8 @@ class VehicleFactory extends AbstractVehicleFactory{
             case 0: return new Plane(random_s(min, max), random_s(min, max), random_s(min, max), random_s(min, 10*max), random_s(min_year, max_year), random_s(min, max), random_s(min_int, max_int) );
             case 1: return new Ship(random_s(min, max), random_s(min, max), random_s(min, max), random_s(min, max), random_s(min_year, max_year), random_s(min_int, max_int), "Номер порта " + String.valueOf(i) );
             case 2: return new Car(random_s(min, max), random_s(min, max), random_s(min, max), random_s(min, max), random_s(min_year, max_year));
+            case 3: return new Amphibia(random_s(min, max), random_s(min, max), random_s(min, max), random_s(min, max), random_s(min_year, max_year));
+            case 4: return new BatMobile(random_s(min, max), random_s(min, max), random_s(min, max), random_s(min, max), random_s(min_year, max_year));
             default:{
                 System.out.println("Enter Vehicle");
                 return null;

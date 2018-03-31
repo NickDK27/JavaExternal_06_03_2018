@@ -1,4 +1,4 @@
-public class Car extends Vehicle {
+public class Car extends Vehicle implements IMove {
 
     public Car(double latitude, double longitude, double price, double speed, int year){
         super(latitude, longitude, price, speed, year);
@@ -22,6 +22,11 @@ public class Car extends Vehicle {
     @Override
     void display_year() {
         System.out.printf("I'm Car. Мій рік випуску: %d\n", super.getYear());
+    }
+
+    @Override
+    public void move() {
+        System.out.printf("I'm Car і я можу їздити\n");
     }
 
 }

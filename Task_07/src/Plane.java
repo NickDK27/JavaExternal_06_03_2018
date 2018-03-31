@@ -1,4 +1,4 @@
-public class Plane extends Vehicle {
+public class Plane extends Vehicle implements IFly {
     double height;
     int passengers;
 
@@ -44,4 +44,8 @@ public class Plane extends Vehicle {
         System.out.printf("I'm Plane. Мій рік випуску: %d\n", super.getYear());
     }
 
+    @Override
+    public void fly() {
+        System.out.printf("I'm Plane і я можу літати\n");
+    }
 }
