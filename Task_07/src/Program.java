@@ -5,17 +5,53 @@ import java.util.Scanner;
 public class Program {
     public static void main(String[] args) throws java.io.IOException {
         int n = 15;
+
+        final String[] type_engine = { "L4", "P7", "L7", "T5", "W3" }, marka_toplyva = { "бензин", "солярка", "газ" }, power_supply_system = { "інжектор" },
+                type_drive = { "передній привод", "задній привод" }, type_trans = { "автоматична", "ручна" }, type_breakes = { "дискові", "барабанні" },
+                type_of_sailing_equipment = { "бермудський шлюп" };
+
         Vehicle[] mas = new Vehicle[n];
-        AbstractVehicleFactory vf = new VehicleFactory();
-        for (int i = 0; i < mas.length; i++) {
-            mas[i] = vf.RandVehicle();
-        }
+        Vehicle.Engine[] engine = new Vehicle.Engine[n];
+        Vehicle.brakes[] brakes = new Vehicle.brakes[n];
+        Car.Drive_Type[] drive_type = new Car.Drive_Type[n];
+        Car.Transmission[] transmissions = new Car.Transmission[n];
+        Car.dimensions[] dimension_car = new Car.dimensions[n];
+        Ship.Screw[] screws = new Ship.Screw[n];
+        Ship.type_of_sailing_equipment[] type_of_sailing_equipments = new Ship.type_of_sailing_equipment[n];
+        Ship.dimensions[] dimensions_ship = new Ship.dimensions[n];
+        Plane.wing[] wings = new Plane.wing[n];
+        Plane.dimensions[] dimensions_plane = new Plane.dimensions[n];
+        Car.trailer[] tr = new Car.trailer[n];
 
         int number;
         int number_root = 1;
         Scanner scan = new Scanner(System.in);
+        AbstractVehicleFactory vf = new VehicleFactory();
 
         while (number_root != 0) {
+            for (int i = 0; i < mas.length; i++) {
+                mas[i] = vf.RandVehicle();
+                engine[i] = mas[i].new Engine(type_engine[vf.random_s(0,type_engine.length-1)], marka_toplyva[vf.random_s(0,marka_toplyva.length-1)],
+                        vf.random_s(1.0,7.0), vf.random_s(2,8), vf.random_s(70,580), vf.random_s(150,270), vf.random_s(2.0,17.0), vf.random_s(7.0,27.0),
+                        power_supply_system[vf.random_s(0,power_supply_system.length-1)],vf.random_s(50,100) );
+                brakes[i] = mas[i].new brakes(type_breakes[vf.random_s(0,type_breakes.length-1)], type_breakes[vf.random_s(0,type_breakes.length-1)]);
+                if (mas[i] instanceof Car) {
+                    drive_type[i] = ((Car) mas[i]).new Drive_Type(type_drive[vf.random_s(0, type_drive.length - 1)]);
+                    transmissions[i] = ((Car) mas[i]).new Transmission(type_trans[vf.random_s(0, type_trans.length - 1)], vf.random_s(4, 10));
+                    dimension_car[i] = ((Car) mas[i]).new dimensions(vf.random_s(3000,15000), vf.random_s(1100,3000), vf.random_s(1000,5000), vf.random_s(1200,4000));
+                } else if (mas[i] instanceof Ship){
+                    screws[i] = ((Ship) mas[i]).new Screw(vf.random_s(2,5));
+                    type_of_sailing_equipments[i] = ((Ship) mas[i]).new type_of_sailing_equipment(type_of_sailing_equipment[vf.random_s(0,type_of_sailing_equipment.length-1)],
+                            vf.random_s(20.0,75.0), vf.random_s(10,25), vf.random_s(7,19), vf.random_s(150,570) );
+                    dimensions_ship[i] = ((Ship) mas[i]).new dimensions(vf.random_s(9,31), vf.random_s(7,25), vf.random_s(2,5), vf.random_s(0.4,0.9), vf.random_s(1.4,2.9), vf.random_s(1.0,2.1), vf.random_s(1500,7000));
+                } else if (mas[i] instanceof Plane) {
+                    wings[i] = ((Plane) mas[i]).new wing(vf.random_s(10.0,90.0), vf.random_s(10.0,1000.0));
+                    dimensions_plane[i] = ((Plane) mas[i]).new dimensions(vf.random_s(15.0,90.0), vf.random_s(7.0,18.0), vf.random_s(5.0,75.0), vf.random_s(30,700));
+                }
+
+                tr[i] = new Car.trailer(vf.random_s(1000.0,5000.0));
+            }
+
             System.out.println("1 - Вивести на екран координати транспортного засобу");
             System.out.println("2 - Вивести на екран ціну транспортного засобу");
             System.out.println("3 - Вивести на екран швидкість транспортного засобу");
@@ -35,6 +71,7 @@ public class Program {
             System.out.println("17 - Масив Ship не старше 5 років з відсортованою ціною за спаданням");
             System.out.println("18 - Три послідовності IFly, ISwim, IMove");
             System.out.println("19 - min та max");
+            System.out.println("20 - Вивести на екран координати всіх транспортних засобів та їх деталі");
             System.out.println("0 - Вихід");
 
             number_root = scan.nextInt();
@@ -269,6 +306,34 @@ public class Program {
                     display(MinI(mas, IMove.class), IMove.class);
                     System.out.println("\nМаксимальна швидкість серед IMove");
                     display(MaxI(mas, IMove.class), IMove.class);
+
+                    System.out.println("Press Enter");
+                    System.in.read();
+                    break;
+                case 20:
+                    System.out.println("\n");
+                    for (int i = 0; i < mas.length; i++) {
+                        mas[i].display_coord();
+
+                        engine[i].display_engine();
+                        brakes[i].display_brakes();
+
+                        if (mas[i] instanceof Car) {
+                            drive_type[i].display_drive_type();
+                            transmissions[i].display_transmission();
+                            dimension_car[i].display_dimensions();
+                        } else if (mas[i] instanceof Ship){
+                            screws[i].display_scew();
+                            type_of_sailing_equipments[i].display_type_of_sailing_equipment();
+                            dimensions_ship[i].display_dimensions();
+                        } else if (mas[i] instanceof Plane) {
+                            wings[i].display_wing();
+                            dimensions_plane[i].display_dimensions();
+                        }
+
+                        tr[i].display_dimensions();
+                        System.out.println("\n");
+                    }
 
                     System.out.println("Press Enter");
                     System.in.read();

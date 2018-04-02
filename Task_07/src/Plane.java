@@ -8,6 +8,34 @@ public class Plane extends Vehicle implements IFly {
         this.passengers = passengers;
     }
 
+    public class dimensions {
+        double length, height, max_length_shipment, max_weigth_shipment;
+
+        public dimensions(double length, double height, double max_length_shipment, double max_weigth_shipment){
+            this.length = length;
+            this.height = height;
+            this.max_length_shipment = max_length_shipment;
+            this.max_weigth_shipment = max_weigth_shipment;
+        }
+
+        void display_dimensions() {
+            System.out.printf("I'm dimension_plane. Довжина %.3f м, висота %.3f м, максимальна довжина вантажу %.3f м, максимальна вага вантажу %.3f т\n", length, height, max_length_shipment, max_weigth_shipment);
+        }
+    }
+
+    public class wing {
+        double wingspan, square_of_one_wing;
+
+        public wing(double wingspan, double square_of_one_wing){
+            this.wingspan = wingspan;
+            this.square_of_one_wing = square_of_one_wing;
+        }
+
+        void display_wing() {
+            System.out.printf("I'm wing. Розмах крила %.3f м, площа одного крила %.3f м^2\n", wingspan, square_of_one_wing);
+        }
+    }
+
     public double getHeight() {
         return height;
     }
