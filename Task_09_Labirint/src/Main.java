@@ -1,118 +1,69 @@
 
-import java.util.Stack;
+import DataStructure.MyStack;
+import DataStructure.Point;
+import Controller.Random;
+import Controller.Compare;
+import LookingWay.FindWay;
 
 public class Main{
-    public static void main(String[] args) {
-        Stack<Point> path = new Stack<>();
 
-        final int n = 5;
+    public static void main(String[] args) {
+        final int n = 7;
         boolean[][] matrix = new boolean[n][n];
 
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
-                matrix[i][j] = random_s();
+                matrix[i][j] = Random.random_s();
 
-        Point startPoint, finishPoint;
-        switch (random_s(0,3)) {
-            case 0: startPoint = new Point(random_s(0,n-1),0);
-                break;
-            case 1: startPoint = new Point(0,random_s(0,n-1));
-                break;
-            case 2: startPoint = new Point(random_s(0,n-1), n-1);
-                break;
-            case 3: startPoint = new Point(n-1, random_s(0,n-1));
-                break;
-                default: startPoint = new Point(0,0);
-        }
-        switch (random_s(0,3)) {
-            case 0: finishPoint = new Point(random_s(0,n-1),0);
-                break;
-            case 1: finishPoint = new Point(0,random_s(0,n-1));
-                break;
-            case 2: finishPoint = new Point(random_s(0,n-1), n-1);
-                break;
-            case 3: finishPoint = new Point(n-1, random_s(0,n-1));
-                break;
-            default: finishPoint = new Point(0,0);
-        }
+        Point startPoint = Random.random_in_out(n);
+        Point finishPoint = Random.random_in_out(n);
+        matrix[startPoint.getX()][startPoint.getY()] = false;
+        matrix[finishPoint.getX()][finishPoint.getY()] = false;
+//        matrix = init_matrix(n);
+//        startPoint.setX(2); startPoint.setY(4);
+//        finishPoint.setX(1); finishPoint.setY(4);
 
-        if (startPoint.getX() == finishPoint.getX() && startPoint.getY() == finishPoint.getY())
+        print_matrix(matrix);
+        System.out.printf("Стартуємо у точці (%d, %d)\n", startPoint.getX(), startPoint.getY());
+        System.out.printf("Фінішуємо у точці (%d, %d)\n", finishPoint.getX(), finishPoint.getY());
+        if (Compare.equals(startPoint,finishPoint))
             System.out.printf("Старт співпадає з фінішом\n");
         else {
-            Stack<Point> stack = new Stack<>();
-            stack = find_path(matrix, stack, finishPoint, startPoint);
+            MyStack path = new MyStack(1000);
+            path = FindWay.find_path(matrix, path, finishPoint, startPoint);
 
-            Point currentPoint = new Point(0,0);
             System.out.printf("Шлях\n");
-            if (!stack.isEmpty())
-                currentPoint = stack.pop();
-            while (!stack.isEmpty()) {
-                System.out.printf("(%d, %d), ", currentPoint.getX(), currentPoint.getY());
-                currentPoint = stack.pop();
+            if (!path.isEmpty()) {
+                Point currentPoint = path.pop();
+                while (!path.isEmpty()) {
+                    System.out.printf("(%d, %d), ", currentPoint.getX(), currentPoint.getY());
+                    currentPoint = path.pop();
+                }
+                System.out.printf("(%d, %d).", currentPoint.getX(), currentPoint.getY());
             }
-            System.out.printf("(%d, %d).", currentPoint.getX(), currentPoint.getY());
+            else
+                System.out.printf("Виходу з лабіринту немає\n");
         }
-
-
     }
 
-    public static Stack<Point> find_path(boolean[][] matrix, Stack<Point> stack, Point currentPoint, Point finishPoint){
-        boolean final_out = false;
-        Point nextPoint;
-
-        
-        stack.push(currentPoint);
-        if (!(stack.lastElement().getX() == finishPoint.getX() && stack.lastElement().getY() == finishPoint.getY())) {
-            if (currentPoint.getX() > 0)
-            if (!matrix[currentPoint.getX() - 1][currentPoint.getY()]) {
-                nextPoint = new Point(currentPoint.getX() - 1, currentPoint.getY());
-                stack = find_path(matrix, stack, nextPoint, finishPoint);
-                if (stack.lastElement().getX() == finishPoint.getX() && stack.lastElement().getY() == finishPoint.getY())
-                    final_out = true;
-            }
-
-            if (currentPoint.getX() < matrix.length)
-            if (!final_out && !matrix[currentPoint.getX() + 1][currentPoint.getY()]) {
-                nextPoint = new Point(currentPoint.getX() + 1, currentPoint.getY());
-                stack = find_path(matrix, stack, nextPoint, finishPoint);
-                if (stack.lastElement().getX() == finishPoint.getX() && stack.lastElement().getY() == finishPoint.getY())
-                    final_out = true;
-            }
-
-            if (currentPoint.getY() > 0)
-            if (!final_out && !matrix[currentPoint.getX()][currentPoint.getY() - 1]) {
-                nextPoint = new Point(currentPoint.getX(), currentPoint.getY() - 1);
-                stack = find_path(matrix, stack, nextPoint, finishPoint);
-                if (stack.lastElement().getX() == finishPoint.getX() && stack.lastElement().getY() == finishPoint.getY())
-                    final_out = true;
-            }
-
-            if (currentPoint.getY() < matrix.length)
-            if (!final_out && !matrix[currentPoint.getX()][currentPoint.getY() + 1]) {
-                nextPoint = new Point(currentPoint.getX(), currentPoint.getY() + 1);
-                stack = find_path(matrix, stack, nextPoint, finishPoint);
-                if (stack.lastElement().getX() == finishPoint.getX() && stack.lastElement().getY() == finishPoint.getY())
-                    final_out = true;
-            }
-
-            if (!final_out)
-                stack.pop();
+    public static void print_matrix(boolean matrix[][]){
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++)
+                if (matrix[i][j])
+                    System.out.printf(" 1");
+                else
+                    System.out.printf(" 0");
+            System.out.printf("\n");
         }
-
-        return stack;
     }
 
-
-    public static int random_s(int min_range, int max_range){
-        return (int)( Math.random() * (max_range-min_range) ) + min_range;
+    public static boolean[][] init_matrix(int n){
+        boolean [][] matrix = new boolean[n][n];
+        matrix[0][0] = false; matrix[0][1] = true; matrix[0][2] = true; matrix[0][3] = false; matrix[0][4] = false;
+        matrix[1][0] = false; matrix[1][1] = false; matrix[1][2] = true; matrix[1][3] = false; matrix[1][4] = false;
+        matrix[2][0] = false; matrix[2][1] = true; matrix[2][2] = true; matrix[2][3] = true; matrix[2][4] = false;
+        matrix[3][0] = true; matrix[3][1] = false; matrix[3][2] = true; matrix[3][3] = true; matrix[3][4] = true;
+        matrix[4][0] = false; matrix[4][1] = false; matrix[4][2] = true; matrix[4][3] = true; matrix[4][4] = true;
+        return  matrix;
     }
-
-    public static boolean random_s(){
-        return Math.random() > 0.5;
-    }
-
-
-
-
 }
-
